@@ -6,7 +6,7 @@ const emptyStdout = 'empty stdout';
 const getDirsCommand = 'dir /ad /b'; // outputs dirs on newlines with always empty newline at end
 function getDirs() {
     var dirs = execute(getDirsCommand);
-    return dirs.split('\r\n'); // windows; could make env-based if needed
+    return dirs.split('\r\n');
 }
 
 const whereAmICommand = 'cd';
