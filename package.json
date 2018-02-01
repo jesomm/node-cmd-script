@@ -1,0 +1,19 @@
+{
+    "name": "node-cmd-script",
+    "author": "Jeri Sommers <jesomm@microsoft.com> (https://github.com/jesomm)",
+    "description": "a simple package for generating XML and running bulk sd commands",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": ""
+    },
+    "scripts": {
+        "nyan": "mocha -R nyan",
+        "test": "mocha"
+    },
+    "version": "0.0.1",
+    "devDependencies": {
+        "mocha": "^5.0.0",
+        "yarn": "^1.2.1"
+    }
+}
