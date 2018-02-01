@@ -1,33 +1,21 @@
-const { execSync } = require('child_process');
+const execute = require('./executeCommand');
 
 const errorMark = 'ERROR: ';
 const emptyStdout = 'empty stdout';
 
-const getDirsCommand = 'dir /ad /b'; // outputs dirs on newlines
+const getDirsCommand = 'dir /ad /b'; // outputs dirs on newlines with always empty newline at end
 function getDirs() {
-    var stdout = execSync(getDirsCommand);
-    if (!stdout) {
-        console.log(errorMark, emptyStdout);
-        return;
-    }
-    var dirs = stdout.toString();
-
+    var dirs = execute(getDirsCommand);
     return dirs.split('\r\n'); // windows; could make env-based if needed
 }
 
 const whereAmICommand = 'cd';
 function whereAmI() {
-    var stdout = execSync(whereAmICommand);
-    if (!stdout) {
-        console.log(errorMark, emptyStdout);
-        return;
-    }
-
-    console.log(stdout);
+    var here = execute(whereAmICommand);
+    console.log("You're in: ", here);
 }
-
 
 const goCommand = whereAmICommand + ' ';
 function go(overThere) {
-    execSync(goCommand + overThere);
+    execute(goCommand + overThere);
 }
