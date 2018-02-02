@@ -1,21 +1,58 @@
-const execute = require('./executeCommand');
+const executeCommand = require('./executeCommand');
 
-const errorMark = 'ERROR: ';
-const emptyStdout = 'empty stdout';
+const newline = '\r\n';
+const argumentError = 'ArgumentNullError';
 
-const getDirsCommand = 'dir /ad /b'; // outputs dirs on newlines with always empty newline at end
-function getDirs() {
-    var dirs = execute(getDirsCommand);
-    return dirs.split('\r\n');
+function getDirs(path) {
+    if (!path) throw new Error(argumentError);
+    var getDirsCommand = `dir ${path} /ad /b`;
+    var dirs = executeCommand(getDirsCommand, true);
+    return dirs ? dirs.split(newline) : null;
 }
 
-const whereAmICommand = 'cd';
-function whereAmI() {
-    var here = execute(whereAmICommand);
-    console.log("You're in: ", here);
+function canHasCsproj(path) {
+    if (!path) throw new Error(argumentError);
+    var canHasCsprojCommand = `dir ${path}\\*.csproj \/a \/b`;
+    var csproj = executeCommand(canHasCsprojCommand, true /* ignoreError */);
+    return csproj != 'File Not Found' ? `${path}\\${csproj}` : null;
 }
 
-const goCommand = whereAmICommand + ' ';
-function go(overThere) {
-    execute(goCommand + overThere);
+const sdIgnoreDirs = ['obj', 'bin', ''];
+const csprojIgnoreDirs = [...sdIgnoreDirs, '.git', 'node_modules'];
+
+/**
+ * returns true when dir not in ignore list
+ * @param {*} dir 
+ */
+function shouldNotIgnoreDir(dir) {
+    return csprojIgnoreDirs.indexOf(dir) == -1;
 }
+
+function getAllCsprojUnderPath(currentPath, startingPath) {
+    // first look for a csproj
+    var csproj = canHasCsproj(currentPath);
+    if (csproj) {
+        return currentPath + csproj;
+    }
+
+    // then look for subdirectories
+    var dirs = getDirs(currentPath);
+    var csprojs = [];
+    dirs.forEach(currentDir => {
+        if (shouldNotIgnoreDir(currentDir)) {
+            var subDirCsproj = getAllCsprojUnderPath(`${ currentPath }\\${ currentDir }`);
+            if (subDirCsproj && subDirCsproj.length > 0) {
+                if (Array.isArray(subDirCsproj)) { // otherwise it spreads individual char -_-'
+                    csprojs.push(...subDirCsproj);
+                } else {
+                    csprojs.push(subDirCsproj);
+                }
+            }
+        }
+    });
+
+    return csprojs.length > 0 ? csprojs : null;
+}
+
+var path = executeCommand('cd').split(newline)[0];
+getDirs(`${ currentPath }\\dir`);
