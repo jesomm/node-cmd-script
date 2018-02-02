@@ -14,7 +14,7 @@ function canHasCsproj(path) {
     if (!path) throw new Error(argumentError);
     var canHasCsprojCommand = `dir ${path}\\*.csproj \/a \/b`;
     var csproj = executeCommand(canHasCsprojCommand, true /* ignoreError */);
-    return csproj != 'File Not Found' ? `${path}\\${csproj}` : null;
+    return csproj && csproj != 'File Not Found' ? `${path}\\${csproj}` : null;
 }
 
 const sdIgnoreDirs = ['obj', 'bin', ''];
@@ -31,15 +31,16 @@ function shouldNotIgnoreDir(dir) {
 function getAllCsprojUnderPath(currentPath, startingPath) {
     // first look for a csproj
     var csproj = canHasCsproj(currentPath);
-    if (csproj) {
-        return currentPath + csproj;
-    }
+    if (csproj) return csproj;
 
     // then look for subdirectories
     var dirs = getDirs(currentPath);
+    if (!dirs) return null;
+
     var csprojs = [];
     dirs.forEach(currentDir => {
         if (shouldNotIgnoreDir(currentDir)) {
+            // make recursive call to get csproj or continue recursive stack
             var subDirCsproj = getAllCsprojUnderPath(`${ currentPath }\\${ currentDir }`);
             if (subDirCsproj && subDirCsproj.length > 0) {
                 if (Array.isArray(subDirCsproj)) { // otherwise it spreads individual char -_-'
@@ -54,5 +55,9 @@ function getAllCsprojUnderPath(currentPath, startingPath) {
     return csprojs.length > 0 ? csprojs : null;
 }
 
-var path = executeCommand('cd').split(newline)[0];
-getDirs(`${ currentPath }\\dir`);
+module.exports = {
+    newline: newline,
+    getAllCsprojUnderPath: getAllCsprojUnderPath,
+    canHasCsproj: canHasCsproj,
+    getDirs: getDirs
+}
