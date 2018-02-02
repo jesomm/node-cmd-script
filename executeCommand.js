@@ -3,11 +3,15 @@ const { execSync } = require('child_process');
 const errorMark = 'ERROR: ';
 const emptyStdout = 'empty stdout';
 
-export function executeCommand(command) {
-    var stdout = execSync(command);
-    if (!stdout) {
-        console.log(errorMark, emptyStdout);
-        return;
+export function executeCommand(command, ignoreError) {
+    var stdout;
+    try {
+        stdout = execSync(command);
+    } catch (e) {
+        if (!ignoreError) {
+            throw e;
+        }
     }
-    return stdout.toString();
+
+    return stdout ? stdout.toString() : null;
 }
