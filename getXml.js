@@ -6,15 +6,15 @@ const argumentError = 'ArgumentNullError';
 function getDirs(path) {
     if (!path) throw new Error(argumentError);
     var getDirsCommand = `dir ${path} /ad /b`;
-    var dirs = executeCommand(getDirsCommand, true);
+    var dirs = executeCommand(getDirsCommand);
     return dirs ? dirs.split(newline) : null;
 }
 
 function canHasCsproj(path) {
     if (!path) throw new Error(argumentError);
     var canHasCsprojCommand = `dir ${path}\\*.csproj \/a \/b`;
-    var csproj = executeCommand(canHasCsprojCommand, true /* ignoreError */);
-    return csproj && csproj != 'File Not Found' ? `${path}\\${csproj}` : null;
+    var csproj = executeCommand(canHasCsprojCommand);
+    return csproj && csproj != 'File Not Found' ? csproj : null;
 }
 
 const sdIgnoreDirs = ['obj', 'bin', ''];
@@ -28,10 +28,10 @@ function shouldNotIgnoreDir(dir) {
     return csprojIgnoreDirs.indexOf(dir) == -1;
 }
 
-function getAllCsprojUnderPath(currentPath, startingPath) {
+function getAllCsprojUnderPath(currentPath, shouldReturnFullCsprojPath) {
     // first look for a csproj
     var csproj = canHasCsproj(currentPath);
-    if (csproj) return csproj;
+    if (csproj) return shouldReturnFullCsprojPath ? `${currentPath}\\${csproj}` : csproj;
 
     // then look for subdirectories
     var dirs = getDirs(currentPath);
