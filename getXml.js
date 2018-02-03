@@ -2,6 +2,7 @@ const executeCommand = require('./executeCommand');
 
 const newline = '\r\n';
 const argumentError = 'ArgumentNullError';
+const alwaysIgnoreDirs = [''];
 
 function getDirs(path) {
     if (!path) throw new Error(argumentError);
@@ -10,54 +11,64 @@ function getDirs(path) {
     return dirs ? dirs.split(newline) : null;
 }
 
-function canHasCsproj(path) {
+function canHasFile(path, options) {
     if (!path) throw new Error(argumentError);
-    var canHasCsprojCommand = `dir ${path}\\*.csproj \/a \/b`;
-    var csproj = executeCommand(canHasCsprojCommand);
-    return csproj && csproj != 'File Not Found' ? csproj : null;
+    var canHasFileCommand = `dir ${path}\\*${options.fileType} \/a \/b`;
+    var file = executeCommand(canHasFileCommand);
+    return file && file != 'File Not Found' ? file.split(newline)[0] : null;
 }
-
-const sdIgnoreDirs = ['obj', 'bin', ''];
-const csprojIgnoreDirs = [...sdIgnoreDirs, '.git', 'node_modules'];
 
 /**
  * returns true when dir not in ignore list
  * @param {*} dir 
  */
-function shouldNotIgnoreDir(dir) {
-    return csprojIgnoreDirs.indexOf(dir) == -1;
+function shouldNotIgnoreDir(dir, options) {
+    return options.ignoreDirs.indexOf(dir) == -1;
 }
 
-function getAllCsprojUnderPath(currentPath, shouldReturnFullCsprojPath) {
-    // first look for a csproj
-    var csproj = canHasCsproj(currentPath);
-    if (csproj) return shouldReturnFullCsprojPath ? `${currentPath}\\${csproj}` : csproj;
+function returnFileString(file, path, options) {
+    if (options.shouldReturnPath) {
+        if (options.shouldReturnRelativePath) {
+            // not yet supported
+        }
+        return `${currentPath}\\${csproj}`;
+    }
+    return file;
+}
+
+function getAllMatchingFilesUnderPath(currentPath, options) {
+    // first look for a matching file
+    var file = canHasFile(currentPath, options);
+    if (file) return returnFileString(file, currentPath, options);
 
     // then look for subdirectories
     var dirs = getDirs(currentPath);
     if (!dirs) return null;
 
-    var csprojs = [];
+    var matchingFiles = [];
     dirs.forEach(currentDir => {
-        if (shouldNotIgnoreDir(currentDir)) {
+        if (shouldNotIgnoreDir(currentDir, options)) {
             // make recursive call to get csproj or continue recursive stack
-            var subDirCsproj = getAllCsprojUnderPath(`${ currentPath }\\${ currentDir }`);
-            if (subDirCsproj && subDirCsproj.length > 0) {
-                if (Array.isArray(subDirCsproj)) { // otherwise it spreads individual char -_-'
-                    csprojs.push(...subDirCsproj);
+            var subDirFile = getAllMatchingFilesUnderPath(`${ currentPath }\\${ currentDir }`, options);
+            if (subDirFile && subDirFile.length > 0) {
+                if (Array.isArray(subDirFile)) { // otherwise it spreads individual char -_-'
+                    matchingFiles.push(...subDirFile);
                 } else {
-                    csprojs.push(subDirCsproj);
+                    matchingFiles.push(subDirFile);
                 }
             }
         }
     });
 
-    return csprojs.length > 0 ? csprojs : null;
+    return matchingFiles.length > 0 ? matchingFiles : null;
+}
+
+function getMatchingFilesUnderPath(path, options) {
+    options.startingPath = path;
+    return getAllMatchingFilesUnderPath(options.startingPath, options);
 }
 
 module.exports = {
     newline: newline,
-    getAllCsprojUnderPath: getAllCsprojUnderPath,
-    canHasCsproj: canHasCsproj,
-    getDirs: getDirs
+    getMatchingFilesUnderPath: getMatchingFilesUnderPath,
 }

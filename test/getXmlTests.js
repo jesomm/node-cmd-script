@@ -1,51 +1,82 @@
 var should = require('should');
 const executeCommand = require('../executeCommand');
-const { newline, getAllCsprojUnderPath } = require('../getXml');
+const { newline, getMatchingFilesUnderPath } = require('../getXml');
 
 describe('getAllCsprojUnderPath()', () => {
-    it('returns null when there are no csproj in the calling path or any subfolder below it', () => {
-        true.should.be.false;
-    });
+    // it('returns null when there are no csproj in the calling path or any subfolder below it', () => {
+    //     true.should.containEql(false);
+    // });
 
-    it('returns a matching file', () => {
-        true.should.be.false;
-    });
+    // it('returns a matching file', () => {
+    //     true.should.containEql(false);
+    // });
 
-    it('ignores non-matching files', () => {
-        true.should.be.false;
-    });
+    // it('ignores non-matching files', () => {
+    //     true.should.containEql(false);
+    // });
 
     it('ignores banned directories', () => {
-        true.should.be.false;
+        var path = executeCommand('cd').split(newline)[0];
+        path = `${path}\\test\\dir`;
+
+        var options = {
+            ignoreDirs: ['ignoreMe', ''],
+            fileType: '.csproj',
+        }
+
+        var result = getMatchingFilesUnderPath(path, options);
+    
+        result.should.not.containEql('IGNORE_ME.csproj');
+        result.should.containEql('dir3.2.2.csproj');
     });
 
     it('stops searching recursively in a file path once it finds the least-deep csproj', () => {
         var path = executeCommand('cd').split(newline)[0];
         path = `${path}\\test\\dir`;
-        var result = getAllCsprojUnderPath(path, false);
+        
+        var options = {
+            ignoreDirs: ['ignoreMe', ''],
+            fileType: '.csproj',
+        }
 
-        (result.indexOf('dir3.2.1.1_IGNORED.csproj') > -1).should.be.false;
-        (result.indexOf('dir3.2.1.csproj') > -1).should.be.true;
-    });
+        var result = getMatchingFilesUnderPath(path, options);
 
-    it('gets all the things that matter and none of the things that do not', () => {
-        var path = executeCommand('cd').split(newline)[0];
-        path = `${path}\\test\\dir`;
-        var result = getAllCsprojUnderPath(path, false);
-
-        (result.indexOf('IGNORE_ME.csproj') > -1).should.be.false;
-        (result.indexOf('dir3.2.2.csproj') > -1).should.be.true;
+        result.should.not.containEql('dir3.2.1.1_IGNORED.csproj');
+        result.should.containEql('dir3.2.1.csproj');
     });
     
     it('returns filenames when requested', () => {
-        true.should.be.false;
+        var path = executeCommand('cd').split(newline)[0];
+        path = `${path}\\test\\dir`;
+        
+        var options = {
+            ignoreDirs: ['ignoreMe', ''],
+            fileType: '.csproj',
+        }
+
+        var result = getMatchingFilesUnderPath(path, options)[0];
+
+        result.should.containEql(options.fileType);
+        result.should.not.containEql(path);
     });
     
-    it('returns paths comparative to starting path when requested', () => {
-        true.should.be.false;
-    });
+    // it('returns paths comparative to starting path when requested', () => {
+    //     true.should.containEql(false);
+    // });
 
     it('returns full file paths when requested', () => {
-        true.should.be.false;
+        var path = executeCommand('cd').split(newline)[0];
+        path = `${path}\\test\\dir`;
+        
+        var options = {
+            shouldReturnPath: true,
+            ignoreDirs: ['ignoreMe', ''],
+            fileType: '.csproj',
+        }
+
+        var result = getMatchingFilesUnderPath(path, options)[0];
+
+        result.should.containEql(options.fileType);
+        result.should.containEql(path);
     });
 });
