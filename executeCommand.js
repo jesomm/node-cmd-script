@@ -1,9 +1,6 @@
 const { execSync } = require('child_process');
 
-const errorMark = 'ERROR: ';
-const emptyStdout = 'empty stdout';
-
-module.exports = function executeCommand(command, ignoreError) {
+module.exports = function executeCommand(command, ignoreError = true) {
     var stdout;
     try {
         stdout = execSync(command);
