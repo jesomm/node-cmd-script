@@ -1,8 +1,8 @@
 var should = require('should');
 const executeCommand = require('../executeCommand');
-const { newline, getMatchingFilesUnderPath } = require('../getXml');
+const { newline, getMatchingFilesUnderPath } = require('../getMatchingFilesUnderPath');
 
-describe('getAllCsprojUnderPath()', () => {
+describe('getMatchingFilesUnderPath()', () => {
     it('returns null when there are no csproj in the calling path or any subfolder below it', () => {
         var path = executeCommand('cd').split(newline)[0];
         path = `${path}\\test\\dir\\dir3\\d3.1`;
