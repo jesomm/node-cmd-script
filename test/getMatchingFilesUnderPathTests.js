@@ -87,16 +87,26 @@ describe('getMatchingFilesUnderPath()', () => {
         result.should.not.containEql(path);
     });
     
-    // it('returns paths comparative to starting path when requested', () => {
-    //     true.should.containEql(false);
-    // });
+    it('returns paths comparative to starting path when requested', () => {
+        var path = executeCommand('cd').split(newline)[0];
+        path = `${path}\\test\\dir\\dir2`;
+        
+        var options = {
+            shouldReturnRelativePath: true,
+            fileType: '.csproj',
+        }
+
+        var result = getMatchingFilesUnderPath(path, options)[0];
+
+        result.should.equal('dir2.1\\dir2.1.csproj');
+    });
 
     it('returns full file paths when requested', () => {
         var path = executeCommand('cd').split(newline)[0];
         path = `${path}\\test\\dir`;
         
         var options = {
-            shouldReturnPath: true,
+            shouldReturnFullPath: true,
             fileType: '.csproj',
         }
 

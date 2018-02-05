@@ -27,11 +27,13 @@ function shouldNotIgnoreDir(dir, options) {
 }
 
 function returnFileString(file, path, options) {
-    if (options.shouldReturnPath) {
-        if (options.shouldReturnRelativePath) {
-            // not yet supported
-        }
+    if (options.shouldReturnFullPath) {
         return `${options.beforeFileString}${path}\\${file}${options.afterFileString}`;
+    }
+
+    if (options.shouldReturnRelativePath) {
+        var trimmedPath = path.slice(options.startingPathLength);
+        return `${options.beforeFileString}${trimmedPath}\\${file}${options.afterFileString}`
     }
     return `${options.beforeFileString}${file}${options.afterFileString}`;
 }
@@ -60,7 +62,15 @@ function getAllMatchingFilesUnderPath(currentPath, options) {
         }
     });
 
-    return matchingFiles.length > 0 ? matchingFiles : null;
+    if (matchingFiles.length > 0) {
+        // this is to account for irregularity between:
+        // - return from finding a matching file in calling directory (first couple lines of this method) and
+        // - only finding a single file after recursive search
+        // in other words, with only one file, always return a string, not an array.
+        return matchingFiles.length == 1 ? matchingFiles[0] : matchingFiles;
+    }
+
+    return null;
 }
 
 function getMatchingFilesUnderPath(path, options) {
@@ -72,8 +82,8 @@ function getMatchingFilesUnderPath(path, options) {
     if (!options.beforeFileString) options.beforeFileString = '';
     if (!options.afterFileString) options.afterFileString = '';
     
-    options.startingPath = path;
-    return getAllMatchingFilesUnderPath(options.startingPath, options);
+    options.startingPathLength = path.length + 1; // account for trailing slash
+    return getAllMatchingFilesUnderPath(path, options);
 }
 
 module.exports = {
