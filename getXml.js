@@ -31,9 +31,9 @@ function returnFileString(file, path, options) {
         if (options.shouldReturnRelativePath) {
             // not yet supported
         }
-        return `${path}\\${file}`;
+        return `${options.beforeFileString}${path}\\${file}${options.afterFileString}`;
     }
-    return file;
+    return `${options.beforeFileString}${file}${options.afterFileString}`;
 }
 
 function getAllMatchingFilesUnderPath(currentPath, options) {
@@ -68,6 +68,10 @@ function getMatchingFilesUnderPath(path, options) {
     if (!options.ignoreDirs) options.ignoreDirs = [''];
     if (options.ignoreDirs.indexOf('') == -1) options.ignoreDirs.push('');
 
+    // ensure we insert empty string and not 'null' or 'undefined' to file string
+    if (!options.beforeFileString) options.beforeFileString = '';
+    if (!options.afterFileString) options.afterFileString = '';
+    
     options.startingPath = path;
     return getAllMatchingFilesUnderPath(options.startingPath, options);
 }
