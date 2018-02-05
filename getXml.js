@@ -31,7 +31,7 @@ function returnFileString(file, path, options) {
         if (options.shouldReturnRelativePath) {
             // not yet supported
         }
-        return `${currentPath}\\${csproj}`;
+        return `${path}\\${file}`;
     }
     return file;
 }
@@ -64,6 +64,10 @@ function getAllMatchingFilesUnderPath(currentPath, options) {
 }
 
 function getMatchingFilesUnderPath(path, options) {
+    // protect against infinite recursion
+    if (!options.ignoreDirs) options.ignoreDirs = [''];
+    if (options.ignoreDirs.indexOf('') == -1) options.ignoreDirs.push('');
+
     options.startingPath = path;
     return getAllMatchingFilesUnderPath(options.startingPath, options);
 }
