@@ -13,8 +13,7 @@ describe('getMatchingFilesUnderPath()', () => {
 
         var result = getMatchingFilesUnderPath(path, options);
 
-        result.should.be.null;
-        result.should.not.containEql('IGNORE_ME_ASSET.png');
+        should.not.exist(result); // have to write weird, because null does not inherit should
     });
 
     it('returns a matching file', () => {
