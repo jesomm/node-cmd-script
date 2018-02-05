@@ -87,7 +87,7 @@ describe('getMatchingFilesUnderPath()', () => {
         result.should.not.containEql(path);
     });
     
-    it('returns paths comparative to starting path when requested', () => {
+    it('returns relative paths to starting path when requested', () => {
         var path = executeCommand('cd').split(newline)[0];
         path = `${path}\\test\\dir\\dir2`;
         
@@ -96,7 +96,7 @@ describe('getMatchingFilesUnderPath()', () => {
             fileType: '.csproj',
         }
 
-        var result = getMatchingFilesUnderPath(path, options)[0];
+        var result = getMatchingFilesUnderPath(path, options);
 
         result.should.equal('dir2.1\\dir2.1.csproj');
     });
