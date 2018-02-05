@@ -40,8 +40,8 @@ describe('getAllCsprojUnderPath()', () => {
 
         var result = getMatchingFilesUnderPath(path, options);
     
-        result.should.not.containEql('IGNORE_ME');
-        result[0].should.containEql('.csproj');
+        result.should.not.containEql('IGNORE_ME.md');
+        result.should.containEql('dir2.1.csproj');
     });
 
     it('ignores banned directories', () => {
@@ -104,5 +104,34 @@ describe('getAllCsprojUnderPath()', () => {
 
         result.should.containEql(options.fileType);
         result.should.containEql(path);
+    });
+    
+    it('adds additional string content to file path when requested', () => {
+        var path = executeCommand('cd').split(newline)[0];
+        path = `${path}\\test\\dir\\dir1`;
+
+        var options = {
+            fileType: '.csproj',
+            beforeFileString: '<mock xml="',
+            afterFileString: '" />',
+        }
+
+        var result = getMatchingFilesUnderPath(path, options);
+
+        result.should.containEql(options.beforeFileString);
+        result.should.containEql(options.afterFileString);
+    });
+    
+    it('does not add additional string content to file path when not requested', () => {
+        var path = executeCommand('cd').split(newline)[0];
+        path = `${path}\\test\\dir\\dir1`;
+
+        var options = {
+            fileType: '.csproj',
+        }
+
+        var result = getMatchingFilesUnderPath(path, options);
+
+        result.should.equal('dir1.csproj');
     });
 });
