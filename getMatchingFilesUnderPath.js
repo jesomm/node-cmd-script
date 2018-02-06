@@ -1,3 +1,4 @@
+var fs = require('fs');
 const executeCommand = require('./executeCommand');
 
 const newline = '\r\n';
@@ -83,7 +84,15 @@ function getMatchingFilesUnderPath(path, options) {
     if (!options.afterFileString) options.afterFileString = '';
     
     options.startingPathLength = path.length + 1; // account for trailing slash
-    return getAllMatchingFilesUnderPath(path, options);
+
+    if (options.writeOutputToFile && !options.outputFileName) options.outputFileName = 'output.txt';
+
+    var result = getAllMatchingFilesUnderPath(path, options);
+    if (options.writeOutputToFile) {
+        fs.writeFileSync(options.outputFileName, result);
+    } else {
+        return result;
+    }
 }
 
 module.exports = {

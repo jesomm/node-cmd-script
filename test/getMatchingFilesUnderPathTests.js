@@ -1,4 +1,5 @@
 var should = require('should');
+var fs = require('fs');
 const executeCommand = require('../executeCommand');
 const { newline, getMatchingFilesUnderPath } = require('../getMatchingFilesUnderPath');
 
@@ -142,5 +143,48 @@ describe('getMatchingFilesUnderPath()', () => {
         var result = getMatchingFilesUnderPath(path, options);
 
         result.should.equal('dir1.csproj');
+    });
+
+    it('writes to file when requested', () => {
+        var path = executeCommand('cd').split(newline)[0];
+        path = `${path}\\test\\dir\\dir1`;
+        
+        var options = {
+            fileType: '.csproj',
+            writeOutputToFile: true,
+            outputFileName: 'customName.xml'
+        }
+        /*
+            not testing default value in case user calls this function from root.
+            prefer not to destroy the output they wanted when cleaning up test output at end of this file. ;)
+        */
+        
+        getMatchingFilesUnderPath(path, options);
+        var result = fs.readFileSync(options.outputFileName, { encoding: 'utf8' });
+
+        should.exist(result);
+        result.should.equal('dir1.csproj');
+    });
+
+    it('takes in custom file name when writing to file', () => {
+        var path = executeCommand('cd').split(newline)[0];
+        path = `${path}\\test\\dir\\dir1`;
+        
+        var options = {
+            fileType: '.csproj',
+            writeOutputToFile: true,
+            outputFileName: 'customName.xml'
+        }
+        
+        getMatchingFilesUnderPath(path, options);
+        var result = fs.readFileSync(options.outputFileName, { encoding: 'utf8' });
+
+        should.exist(result);
+        result.should.equal('dir1.csproj');
+    });
+
+    // remove test output files
+    after(() => {
+        fs.unlinkSync('customName.xml');
     });
 });
