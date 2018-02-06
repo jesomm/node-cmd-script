@@ -1,8 +1,9 @@
 const should = require('should');
 const fs = require('fs');
 const path = require('path');
-const executeCommand = require('../executeCommand');
-const { newline, getMatchingFilesUnderPath } = require('../getMatchingFilesUnderPath');
+const executeCommand = require('../lib/executeCommand');
+const { getMatchingFilesUnderPath } = require('../lib/getMatchingFilesUnderPath');
+const { newline } = require('../lib/constants');
 
 describe('getMatchingFilesUnderPath()', () => {
     var currentPath = executeCommand('cd').split(newline)[0];
