@@ -1,20 +1,21 @@
-var fs = require('fs');
+const fs = require('fs');
+const path = require('path');
 const executeCommand = require('./executeCommand');
 
 const newline = '\r\n';
 const argumentError = 'ArgumentNullError';
 const alwaysIgnoreDirs = [''];
 
-function getDirs(path) {
-    if (!path) throw new Error(argumentError);
-    var getDirsCommand = `dir ${path} /ad /b`;
+function getDirs(dirPath) {
+    if (!dirPath) throw new Error(argumentError);
+    var getDirsCommand = `dir ${dirPath} /ad /b`;
     var dirs = executeCommand(getDirsCommand);
     return dirs ? dirs.split(newline) : null;
 }
 
-function canHasFile(path, options) {
-    if (!path) throw new Error(argumentError);
-    var canHasFileCommand = `dir ${path}\\*${options.fileType} \/a \/b`;
+function canHasFile(filePath, options) {
+    if (!filePath) throw new Error(argumentError);
+    var canHasFileCommand = `dir ${filePath}\\*${options.fileType} \/a \/b`;
     var file = executeCommand(canHasFileCommand);
     return file && file != 'File Not Found' ? file.split(newline)[0] : null;
 }
@@ -27,16 +28,21 @@ function shouldNotIgnoreDir(dir, options) {
     return options.ignoreDirs.indexOf(dir) == -1;
 }
 
-function returnFileString(file, path, options) {
+function returnFileString(file, filePath, options) {
+    var output = options.beforeFileString;
+    var fileInfo;
     if (options.shouldReturnFullPath) {
-        return `${options.beforeFileString}${path}\\${file}${options.afterFileString}`;
+        fileInfo = `${filePath}\\${file}`;
+    } else if (options.shouldReturnRelativePath) {
+        var trimmedPath = filePath.slice(options.relativePathLength);
+        fileInfo = `${trimmedPath}\\${file}`
+    } else {
+        fileInfo = file;
     }
+    output += path.normalize(fileInfo);
+    output += options.afterFileString;
 
-    if (options.shouldReturnRelativePath) {
-        var trimmedPath = path.slice(options.startingPathLength);
-        return `${options.beforeFileString}${trimmedPath}\\${file}${options.afterFileString}`
-    }
-    return `${options.beforeFileString}${file}${options.afterFileString}`;
+    return output;
 }
 
 function getAllMatchingFilesUnderPath(currentPath, options) {
@@ -74,20 +80,31 @@ function getAllMatchingFilesUnderPath(currentPath, options) {
     return null;
 }
 
-function getMatchingFilesUnderPath(path, options) {
+function tryUpdateRelativePathInfo(searchPath, options) {
+    var relativePath = options.relativePathTo;
+    if (relativePath) {
+        if (searchPath.indexOf(relativePath) != 0) throw new Error('specified relativePathTo not found at index 0 of calling path');
+        options.relativePathLength = relativePath.length;    
+    } else {
+        options.relativePathLength = searchPath.length + 1;
+    }
+
+    return options;
+}
+
+function getMatchingFilesUnderPath(searchPath, options) {
     // protect against infinite recursion
     if (!options.ignoreDirs) options.ignoreDirs = [''];
     if (options.ignoreDirs.indexOf('') == -1) options.ignoreDirs.push('');
 
-    // ensure we insert empty string and not 'null' or 'undefined' to file string
+    // ensure insert of empty string and not 'null' or 'undefined' to file string
     if (!options.beforeFileString) options.beforeFileString = '';
     if (!options.afterFileString) options.afterFileString = '';
     
-    options.startingPathLength = path.length + 1; // account for trailing slash
-
+    if (options.shouldReturnRelativePath) options = tryUpdateRelativePathInfo(searchPath, options);
     if (options.writeOutputToFile && !options.outputFileName) options.outputFileName = 'output.txt';
 
-    var result = getAllMatchingFilesUnderPath(path, options);
+    var result = getAllMatchingFilesUnderPath(searchPath, options);
     if (options.writeOutputToFile) {
         fs.writeFileSync(options.outputFileName, result);
     } else {

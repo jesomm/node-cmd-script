@@ -24,6 +24,7 @@ beforeFileString         | anything you want returned with the file string, eg, 
 afterFileString          | anything you want returned with the file string, eg, `" />` for `<mock xml="fileName.csproj" />`
 shouldReturnFullPath     | set to true if you want to return the full path, eg `D:/Git/YourRepo/Package/Project.csproj` instead of `Project.csproj`
 shouldReturnRelativePath | set to true if you want to return a relative to where you're calling, eg `Package/Project.csproj` when called from `D:/Git/YourRepo/`
+relativePathTo           | override the default behavior of returning relative path to path called from; must be a substring of original calling path, eg `D:/Git`
 writeOutputToFile        | set to true if you want to write output to file or false if you want to handle output yourself
 outputFileName           | set to override default `output.txt` when `writeOutputToFile` is true
 
