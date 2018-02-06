@@ -8,16 +8,17 @@ Posting this to GitHub on the off chance somebody else wants to do the same thin
 
 - - -
 
-This code currently exports one main function: `getMatchingFilesUnderPath`. It searches recursively for matching files and returns as soon as it finds one. An intentional side effect of this implementation is that it stops searching subfolders on finding a match in a parent folder. It will continue searching sibling folders until it finds or conclusively does not find additional matching files.
+This code currently exports one main function: `getMatchingFilesUnderPath`. By default, it searches recursively for matching files and returns as soon as it finds one. An intentional side effect of this implementation is that it stops searching subfolders on finding a match in a parent folder. It will continue searching sibling folders until it finds or conclusively does not find additional matching files. If you do not specify a file type to match, it will return the first file found.
 
 If no matching files are found, this function returns `null`.
 If one matching file is found, this function returns the file path as a string.
 For all other matches, it returns an array of strings.
 
-You can specify additional options including directories to ignore and additional content to append to the file output string:
+You can specify additional options:
 
 option                   | explanation
 -------------------------|------------
+stopOnFirstMatch         | set to false to override default search behavior and return all matches. _this is way, way less performant_, as it will search every single directory under your original calling path.
 fileType                 | the file type to look for, eg `.csproj`
 ignoreDirs               | directories not to search in; probably similar to the contents of a `.gitignore` or `.npmignore`
 beforeFileString         | anything you want returned with the file string, eg, `<mock xml="` for `<mock xml="fileName.csproj" />`
