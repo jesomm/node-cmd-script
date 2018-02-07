@@ -23,7 +23,7 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
         
                 should.not.exist(result); // have to write weird, because null does not inherit should
             });
-        
+
             it('ignores non-matching files', () => {
                 testPath = path.normalize(`${currentPath}\\test\\dir\\dir2`);
         
@@ -36,6 +36,22 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
             
                 result.should.not.containEql('IGNORE_ME.md');
                 result.should.containEql('dir2.1.csproj');
+                result.length.should.equal(1);
+            });
+
+            it('does not add null to output when some directories do not contain matching files', () => {
+                testPath = path.normalize(`${currentPath}\\test\\dir`);
+        
+                var options = {
+                    ignoreDirs: ['ignoreMe'],
+                    fileType: '.csproj',
+                    stopOnFirstMatch: flag,
+                }
+        
+                var result = getMatchingFilesUnderPath(testPath, options);
+            
+                result.should.not.containEql(null);
+                result.should.not.containEql('null');
             });
         
             it('ignores banned directories', () => {
@@ -61,10 +77,11 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     stopOnFirstMatch: flag,
                 }
         
-                var result = getMatchingFilesUnderPath(testPath, options)[0];
+                var result = getMatchingFilesUnderPath(testPath, options);
+                var fileInResult = result[0];
         
-                result.should.containEql(options.fileType);
-                result.should.not.containEql(testPath);
+                fileInResult.should.containEql(options.fileType);
+                fileInResult.should.not.containEql(testPath);
             });
             
             it('returns relative paths to starting path when requested', () => {
@@ -77,8 +94,9 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                 }
         
                 var result = getMatchingFilesUnderPath(testPath, options);
+                var fileInResult = result[0];
         
-                result.should.equal('dir2.1\\dir2.1.csproj');
+                fileInResult.should.equal('dir2.1\\dir2.1.csproj');
             });
         
             it('returns relative paths to subset of starting path when requested', () => {
@@ -92,8 +110,9 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                 }
         
                 var result = getMatchingFilesUnderPath(testPath, options);
+                var fileInResult = result[0];
         
-                result.should.equal('test\\dir\\dir2\\dir2.1\\dir2.1.csproj');
+                fileInResult.should.equal('test\\dir\\dir2\\dir2.1\\dir2.1.csproj');
             });
         
             it('throws on bad relative path', () => {
@@ -143,9 +162,10 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                 }
         
                 var result = getMatchingFilesUnderPath(testPath, options);
+                var fileInResult = result[0];
         
-                result.should.containEql(options.beforeFileString);
-                result.should.containEql(options.afterFileString);
+                fileInResult.should.containEql(options.beforeFileString);
+                fileInResult.should.containEql(options.afterFileString);
             });
             
             it('does not add additional string content to file path when not requested', () => {
@@ -157,8 +177,9 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                 }
         
                 var result = getMatchingFilesUnderPath(testPath, options);
+                var fileInResult = result[0];
         
-                result.should.equal('dir1.csproj');
+                fileInResult.should.equal('dir1.csproj');
             });
         
             it('writes to file when requested', () => {
@@ -179,7 +200,8 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                 var result = fs.readFileSync(options.outputFileName, { encoding: 'utf8' });
         
                 should.exist(result);
-                result.should.equal('dir1.csproj');
+                result.should.equal(`dir1.csproj${newline}`);
+                fs.unlinkSync('customName.xml');
             });
         
             it('takes in custom file name when writing to file', () => {
@@ -196,14 +218,9 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                 var result = fs.readFileSync(options.outputFileName, { encoding: 'utf8' });
         
                 should.exist(result);
-                result.should.equal('dir1.csproj');
-            });
-        
-            // remove test output files
-            after(() => {
+                result.should.equal(`dir1.csproj${newline}`);
                 fs.unlinkSync('customName.xml');
             });
         });
     })
-
 });
