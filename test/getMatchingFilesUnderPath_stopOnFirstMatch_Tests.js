@@ -32,4 +32,16 @@ describe('getMatchingFilesUnderPath()-- with stopOnFirstMatch flag undefined or 
         result.should.not.containEql('dir3.2.1.1_IGNORE_ME.csproj');
         result.should.containEql('dir3.2.1.csproj');
     });
+
+    it('returns first found matching file even when there are multiple matches in a given directory', () => {
+        testPath = path.normalize(`${currentPath}\\test\\dir\\dir2`);
+
+        var options = {
+            fileType: '.*',
+        }
+
+        var result = getMatchingFilesUnderPath(testPath, options);
+
+        result.length.should.equal(1);
+    });
 });
