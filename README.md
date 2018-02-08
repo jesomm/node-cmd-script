@@ -21,8 +21,7 @@ option                   | explanation
 stopOnFirstMatch         | set to false to override default search behavior and return all matches. _this is way, way less performant_, as it will search every single directory under your original calling path.
 fileType                 | the file type to look for, eg `.csproj`
 ignoreDirs               | directories not to search in; probably similar to the contents of a `.gitignore` or `.npmignore`
-beforeFileString         | anything you want returned with the file string, eg, `<mock xml="` for `<mock xml="fileName.csproj" />`
-afterFileString          | anything you want returned with the file string, eg, `" />` for `<mock xml="fileName.csproj" />`
+fileStringTemplate       | anything you want returned with the file string, eg, `<mock xml="{0}" />` for `<mock xml="fileName.csproj" />`
 shouldReturnFullPath     | set to true if you want to return the full path, eg `D:/Git/YourRepo/Package/Project.csproj` instead of `Project.csproj`
 shouldReturnRelativePath | set to true if you want to return a relative to where you're calling, eg `Package/Project.csproj` when called from `D:/Git/YourRepo/`
 relativePathTo           | override the default behavior of returning relative path to path called from; must be a substring of original calling path, eg `D:/Git`

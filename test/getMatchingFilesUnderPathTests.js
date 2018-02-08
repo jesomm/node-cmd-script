@@ -156,16 +156,14 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
         
                 var options = {
                     fileType: '.csproj',
-                    beforeFileString: '<mock xml="',
-                    afterFileString: '" />',
+                    fileStringTemplate: '<mock xml="{}" />',
                     stopOnFirstMatch: flag,
                 }
         
                 var result = getMatchingFilesUnderPath(testPath, options);
                 var fileInResult = result[0];
         
-                fileInResult.should.containEql(options.beforeFileString);
-                fileInResult.should.containEql(options.afterFileString);
+                fileInResult.should.containEql('<mock xml="dir1.csproj" />');
             });
             
             it('does not add additional string content to file path when not requested', () => {
