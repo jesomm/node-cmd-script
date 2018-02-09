@@ -1,6 +1,6 @@
 {
     "name": "node-cmd-script",
-    "version": "0.4.1",
+    "version": "0.5.0",
     "author": "Jeri Sommers <jesomm@microsoft.com> (https://github.com/jesomm)",
     "description": "a simple package for generating XML and running bulk sd commands",
     "dependencies": {

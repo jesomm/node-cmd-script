@@ -1,4 +1,4 @@
-## node-cmd-script
+# node-cmd-script
 
 As part of integrating two different source depot branches, I needed to generate some XML and run a huge number of sd commands. While I could have done this with [batch scripting](https://www.tutorialspoint.com/batch_script/index.htm), I thought it would be interesting to use Node instead.
 
@@ -27,14 +27,13 @@ shouldReturnRelativePath | set to true if you want to return a relative to where
 relativePathTo           | override the default behavior of returning relative path to path called from; must be a substring of original calling path, eg `D:/Git`
 writeOutputToFile        | set to true if you want to write output to file or false if you want to handle output yourself
 outputFileName           | set to override default `output.txt` when `writeOutputToFile` is true
-<!--
-runBulkOperation         | set to true if you want to use `(before|after)fileString` to construct a command you want to run against every file
-insertFileTwice          | set to true if you need to insert relative paths twice in the string, eg for sd integrate commands
+runBulkOperation         | set to true if you want to use `fileStringTemplate` to construct a command you want to run against every file
+testBulkOperation        | set to true if you need to insert relative paths twice in the string, eg for sd integrate commands
 errorFileName            | set to override default `error.txt` when `runBulkOperation` and `writeOutputToFile` are true
--->
 
+- - -
 
-### Developing with this repository
+## Developing with this repository
 
 While it's still windows-flavored, you must work from a windows command shell.
 1. `git pull` to get the latest changes
