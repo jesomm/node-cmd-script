@@ -12,9 +12,9 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
         testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         
         var options = {
-            runBulkOperation: true,
             fileStringTemplate: 'echo "{0} {1}"',
             fileType: '.*',
+            runBulkOperation: true,
         }
         
         var result = getMatchingFilesUnderPath(testPath, options);
@@ -27,9 +27,9 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
         testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         
         var options = {
-            testBulkOperation: true,
             fileStringTemplate: 'echo "{0} {1}"',
             fileType: '.*',
+            testBulkOperation: true,
         }
         
         var result = getMatchingFilesUnderPath(testPath, options);
@@ -41,10 +41,10 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
         testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         
         var options = {
-            runBulkOperation: true,
-            testBulkOperation: true,
             fileStringTemplate: 'echo "{0} {1}"',
             fileType: '.*',
+            runBulkOperation: true,
+            testBulkOperation: true,
         }
         
         var result = getMatchingFilesUnderPath(testPath, options);
@@ -56,14 +56,39 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
         testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         
         var options = {
-            runBulkOperation: true,
-            testBulkOperation: true,
             fileStringTemplate: 'echo "{0},{1},{2},{3},{4}"',
             fileType: '.*',
+            runBulkOperation: true,
+            testBulkOperation: true,
         }
         
         var result = getMatchingFilesUnderPath(testPath, options);
         
         result.should.containEql('echo "dir1.csproj,dir1.csproj,dir1.csproj,,"');
+    });
+
+    it('logs errors from executing generated commands to an error file when runBulkOperation and writeOutputToFile are both true', () => {
+        testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
+        
+        var options = {
+            errorFileName: 'theBestErrorFile.txt',
+            fileType: '.csproj',
+            fileStringTemplate: 'npm run derp {0}',
+            outputFileName: 'customName.xml',
+            runBulkOperation: true,
+            writeOutputToFile: true,
+        }
+        
+        getMatchingFilesUnderPath(testPath, options);
+        var result = fs.readFileSync(options.errorFileName, { encoding: 'utf8' });
+
+        should.exist(result);
+        result.should.containEql('Error: Command failed: npm run derp');
+        result.should.containEql('npm ERR!');
+    });
+
+    after(() => {
+        fs.unlinkSync('customName.xml');
+        fs.unlinkSync('theBestErrorFile.txt');
     });
 });

@@ -47,8 +47,8 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     testPath = path.normalize(`${currentPath}\\test\\dir`);
             
                     var options = {
-                        ignoreDirs: ['ignoreMe'],
                         fileType: '.csproj',
+                        ignoreDirs: ['ignoreMe'],
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
                     }
@@ -63,8 +63,8 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     testPath = path.normalize(`${currentPath}\\test\\dir`);
             
                     var options = {
-                        ignoreDirs: ['ignoreMe'],
                         fileType: '.csproj',
+                        ignoreDirs: ['ignoreMe'],
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
                     }
@@ -95,8 +95,8 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     testPath = path.normalize(`${currentPath}\\test\\dir\\dir2`);
                     
                     var options = {
-                        shouldReturnRelativePath: true,
                         fileType: '.csproj',
+                        shouldReturnRelativePath: true,
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
                     }
@@ -111,9 +111,9 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     var testPath = path.normalize(`${currentPath}\\test\\dir\\dir2\\`);
                     
                     var options = {
-                        shouldReturnRelativePath: true,
-                        relativePathTo: `${path.normalize(currentPath)}\\`,
                         fileType: '.csproj',
+                        relativePathTo: `${path.normalize(currentPath)}\\`,
+                        shouldReturnRelativePath: true,
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
                     }
@@ -130,9 +130,9 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     var malformedPath = relativePath.slice(1);
                     
                     var options = {
-                        shouldReturnRelativePath: true,
-                        relativePathTo: malformedPath,
                         fileType: '.csproj',
+                        relativePathTo: malformedPath,
+                        shouldReturnRelativePath: true,
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
                     }
@@ -150,8 +150,8 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     testPath = path.normalize(`${currentPath}\\test\\dir`);
                     
                     var options = {
-                        shouldReturnFullPath: true,
                         fileType: '.csproj',
+                        shouldReturnFullPath: true,
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
                     }
@@ -166,8 +166,8 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
             
                     var options = {
-                        fileType: '.csproj',
                         fileStringTemplate: '<mock xml="{}" />',
+                        fileType: '.csproj',
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
                     }
@@ -197,11 +197,12 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
                     
                     var options = {
+                        errorFileName: 'theBestErrorFile.txt',
                         fileType: '.csproj',
-                        writeOutputToFile: true,
                         outputFileName: 'customName.xml',
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
+                        writeOutputToFile: true,
                     }
                     /*
                         not testing default value in case user calls this function from root.
@@ -220,11 +221,12 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
                     
                     var options = {
+                        errorFileName: 'theBestErrorFile.txt',
                         fileType: '.csproj',
-                        writeOutputToFile: true,
                         outputFileName: 'customName.xml',
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
+                        writeOutputToFile: true,
                     }
                     
                     getMatchingFilesUnderPath(testPath, options);
