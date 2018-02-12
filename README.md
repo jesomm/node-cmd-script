@@ -30,6 +30,7 @@ outputFileName           | set to override default `output.txt` when `writeOutpu
 runBulkOperation         | set to true if you want to use `fileStringTemplate` to construct a command you want to run against every file
 testBulkOperation        | set to true if you need to insert relative paths twice in the string, eg for sd integrate commands
 errorFileName            | set to override default `error.txt` when `runBulkOperation` and `writeOutputToFile` are true
+stopOnError              | set to true if you want bulk operation to stop on error; otherwise it will simply log the error and continue
 
 - - -
 

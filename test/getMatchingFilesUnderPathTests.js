@@ -197,9 +197,9 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
                     testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
                     
                     var options = {
-                        errorFileName: 'theBestErrorFile.txt',
+                        errorFileName: 'theBestErrorFile.ignoreMe.txt',
                         fileType: '.csproj',
-                        outputFileName: 'customName.xml',
+                        outputFileName: 'customName.ignoreMe.xml',
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
                         writeOutputToFile: true,
@@ -214,16 +214,16 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
             
                     should.exist(result);
                     result.should.equal(`dir1.csproj${newline}`);
-                    fs.unlinkSync('customName.xml');
+                    fs.unlinkSync(options.outputFileName);
                 });
             
                 it('takes in custom file name when writing to file', () => {
                     testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
                     
                     var options = {
-                        errorFileName: 'theBestErrorFile.txt',
+                        errorFileName: 'theBestErrorFile.ignoreMe.txt',
                         fileType: '.csproj',
-                        outputFileName: 'customName.xml',
+                        outputFileName: 'customName.ignoreMe.xml',
                         stopOnFirstMatch: searchFlag,
                         testBulkOperation: testFlag,
                         writeOutputToFile: true,
@@ -234,7 +234,7 @@ describe('getMatchingFilesUnderPath()-- behaviors not changed by stopOnFirstMatc
             
                     should.exist(result);
                     result.should.equal(`dir1.csproj${newline}`);
-                    fs.unlinkSync('customName.xml');
+                    fs.unlinkSync(options.outputFileName);
                 });
             });
         });

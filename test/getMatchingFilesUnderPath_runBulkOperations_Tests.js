@@ -71,10 +71,10 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
         testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         
         var options = {
-            errorFileName: 'theBestErrorFile.txt',
+            errorFileName: 'theBestErrorFile.ignoreMe.txt',
             fileType: '.csproj',
             fileStringTemplate: 'npm run derp {0}',
-            outputFileName: 'customName.xml',
+            outputFileName: 'customName.ignoreMe.xml',
             runBulkOperation: true,
             writeOutputToFile: true,
         }
@@ -87,8 +87,41 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
         result.should.containEql('npm ERR!');
     });
 
+    it('continues running after error when stopOnError flag is not set', function() {
+        this.timeout(6000); // ;_;
+        testPath = path.normalize(`${currentPath}\\test\\dir\\dir3`);
+        
+        var options = {
+            fileType: '.csproj',
+            fileStringTemplate: 'npm run derp {0}',
+            runBulkOperation: true,
+        }
+        
+        var result = getMatchingFilesUnderPath(testPath, options);
+
+        should.exist(result);
+        result.length.should.equal(2);
+    });
+
+    it('stops running after error when stopOnError flag is set to true', function() {
+        this.timeout(6000); // ;_;
+        testPath = path.normalize(`${currentPath}\\test\\dir\\dir3`);
+        
+        var options = {
+            fileType: '.csproj',
+            fileStringTemplate: 'npm run derp {0}',
+            runBulkOperation: true,
+            stopOnError: true,
+        }
+        
+        var result = getMatchingFilesUnderPath(testPath, options);
+
+        should.exist(result);
+        result.length.should.equal(1);
+    });
+
     after(() => {
-        fs.unlinkSync('customName.xml');
-        fs.unlinkSync('theBestErrorFile.txt');
+        fs.unlinkSync('customName.ignoreMe.xml');
+        fs.unlinkSync('theBestErrorFile.ignoreMe.txt');
     });
 });
