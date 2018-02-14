@@ -4,7 +4,7 @@
     "author": "Jeri Sommers <jesomm@microsoft.com> (https://github.com/jesomm)",
     "description": "a simple package for generating XML and running bulk sd commands",
     "dependencies": {
-        "string-format": "^0.5.1"
+        "string-format": "^0.6.0"
     },
     "devDependencies": {
         "mocha": "^5.0.0",

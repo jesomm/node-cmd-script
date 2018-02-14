@@ -9,8 +9,7 @@ describe('getMatchingFilesUnderPath()-- with stopOnFirstMatch flag set to false,
     var currentPath = executeCommand('cd').split(newline)[0];
 
     it('returns null when there are no matching files in the calling path or any subfolder below it', () => {
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir3\\d3.1`);
-
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir3\\d3.1`);
         var options = {
             fileType: '.csproj',
             stopOnFirstMatch: false,
@@ -22,8 +21,7 @@ describe('getMatchingFilesUnderPath()-- with stopOnFirstMatch flag set to false,
     });
 
     it('returns a matching file', () => {
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
-
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         var options = {
             fileType: '.csproj',
             stopOnFirstMatch: false,
@@ -35,10 +33,8 @@ describe('getMatchingFilesUnderPath()-- with stopOnFirstMatch flag set to false,
     });
 
     it('returns all matching files', () => {
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir2`);
-
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir2`);
         var options = {
-            fileType: '.*',
             stopOnFirstMatch: false,
         }
 
@@ -49,8 +45,7 @@ describe('getMatchingFilesUnderPath()-- with stopOnFirstMatch flag set to false,
     });
 
     it('keeps searching recursively in a file path when it finds the least-deep matching file', () => {
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir3`);
-        
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir3`);
         var options = {
             fileType: '.csproj',
             stopOnFirstMatch: false,

@@ -31,6 +31,8 @@ runBulkOperation         | set to true if you want to use `fileStringTemplate` t
 testBulkOperation        | set to true if you need to insert relative paths twice in the string, eg for sd integrate commands
 errorFileName            | set to override default `error.txt` when `runBulkOperation` and `writeOutputToFile` are true
 stopOnError              | set to true if you want bulk operation to stop on error; otherwise it will simply log the error and continue
+mirrorDirectoryStructure | set to true if you want to run a command that requires mirroring the directory structure, eg copying from one location to another
+mirrorDirectoriesWhere   | the location to start mirroring from :)
 
 - - -
 

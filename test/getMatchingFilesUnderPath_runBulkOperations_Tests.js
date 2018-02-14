@@ -9,11 +9,9 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
     var currentPath = executeCommand('cd').split(newline)[0];
 
     it('executes commands as generated for each matching file when runBulkOperation is true', () => {
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
-        
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         var options = {
             fileStringTemplate: 'echo "{0} {1}"',
-            fileType: '.*',
             runBulkOperation: true,
         }
         
@@ -24,11 +22,9 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
     });
     
     it('returns each command as generated when testBulkOperation is true', () => {
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
-        
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         var options = {
             fileStringTemplate: 'echo "{0} {1}"',
-            fileType: '.*',
             testBulkOperation: true,
         }
         
@@ -38,11 +34,9 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
     });
 
     it('does not execute commands when testBulkOperation is set to true', () => {
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
-        
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         var options = {
             fileStringTemplate: 'echo "{0} {1}"',
-            fileType: '.*',
             runBulkOperation: true,
             testBulkOperation: true,
         }
@@ -53,11 +47,9 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
     });
 
     it('adds the file match output a maximum of three times to the fileStringTemplate', () => {
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
-        
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         var options = {
             fileStringTemplate: 'echo "{0},{1},{2},{3},{4}"',
-            fileType: '.*',
             runBulkOperation: true,
             testBulkOperation: true,
         }
@@ -68,8 +60,7 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
     });
 
     it('logs errors from executing generated commands to an error file when runBulkOperation and writeOutputToFile are both true', () => {
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
-        
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir1`);
         var options = {
             errorFileName: 'theBestErrorFile.ignoreMe.txt',
             fileType: '.csproj',
@@ -89,8 +80,7 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
 
     it('continues running after error when stopOnError flag is not set', function() {
         this.timeout(6000); // ;_;
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir3`);
-        
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir3`);
         var options = {
             fileType: '.csproj',
             fileStringTemplate: 'npm run derp {0}',
@@ -105,8 +95,7 @@ describe('getMatchingFilesUnderPath()-- with runBulkOperations flag set to true'
 
     it('stops running after error when stopOnError flag is set to true', function() {
         this.timeout(6000); // ;_;
-        testPath = path.normalize(`${currentPath}\\test\\dir\\dir3`);
-        
+        var testPath = path.normalize(`${currentPath}\\test\\dir\\dir3`);
         var options = {
             fileType: '.csproj',
             fileStringTemplate: 'npm run derp {0}',
